@@ -1,8 +1,52 @@
 <html>
   <head>
-    <p>Nope!</p>
     <script>
-      alert('Moon day')
+      alert('Moon day?')
     </script>
+    <script>
+      // Huge thanks to Ben Daglish for these functions
+      // http://www.ben-daglish.net/moon.shtml
+      function julday(year, month, day) {
+	if (year < 0) { year ++; }
+	var jy = parseInt(year);
+	var jm = parseInt(month) +1;
+	if (month <= 2) {jy--;	jm += 12;	}
+	var jul = Math.floor(365.25 *jy) + Math.floor(30.6001 * jm) + parseInt(day) + 1720995;
+	if (day+31*(month+12*year) >= (15+31*(10+12*1582))) {
+		ja = Math.floor(0.01 * jy);
+		jul = jul + 2 - ja + Math.floor(0.25 * ja);
+	}
+	return jul;
+      }
+      function lunar(year,month,day) {
+	n = Math.floor(12.37 * (year -1900 + ((1.0 * month - 0.5)/12.0)));
+	RAD = 3.14159265/180.0;
+	t = n / 1236.85;
+	t2 = t * t;
+	as = 359.2242 + 29.105356 * n;
+	am = 306.0253 + 385.816918 * n + 0.010730 * t2;
+	xtra = 0.75933 + 1.53058868 * n + ((1.178e-4) - (1.55e-7) * t) * t2;
+	xtra += (0.1734 - 3.93e-4 * t) * Math.sin(RAD * as) - 0.4068 * Math.sin(RAD * am);
+	i = (xtra > 0.0 ? Math.floor(xtra) :  Math.ceil(xtra - 1.0));
+	j1 = julday(year,month,day);
+	jd = (2415020 + 28 * n) + i;
+	return (j1-jd + 30)%30;
+      }
+      function isitamoonday()
+      {
+        var today = new Date();
+	var lunar_day = lunar(today.getFullYear(), today.getMonth()+1, today.getDate());
+        var lunar_str;
+        if(lunar_day % 15){
+          lunar_str = 'NO'
+        }
+        else{
+          lunar_str = 'YES';
+        }
+        return lunar_str;
+      }
+      var moon_day = isitamoonday();
+    </script>
+    <p><font size="50"><center><script>document.write(moon_day)</script></center></font></p>
   </head>
 </html>
